@@ -57,7 +57,7 @@ const handleInputValue = event => {
         renderCountryInfo(matchingCountries[0]);
         countryListEl.textContent = '';
 
-      } else if (matchingCountries.length >= 2) {
+      } else if (matchingCountries.length >= 2 && matchingCountries.length <= 10) {
         renderCountryList(matchingCountries);
         countryInfoEl.textContent = '';
       } else {
