@@ -47,34 +47,34 @@ const handleInputValue = event => {
     .then(countries => {
       const matchingCountries = countries.filter(country => {
         const name = country.name.common.toLowerCase().trim();
-        return name.startsWith(searchQuery) || name.includes(searchQuery);
+        return name.startsWith(searchQuery);
       });
 
-      if (
-        matchingCountries.length === 1 ||
-        matchingCountries[0]?.name?.common.toLowerCase() === searchQuery
+      if (matchingCountries.length === 0) {
+        countryInfoEl.textContent = '';
+        countryListEl.textContent = '';
+        Notify.failure('Oops, there is no country with that name');
+      } else if (
+        matchingCountries.length >= 2 &&
+        matchingCountries.length <= 10
+      ) {
+        renderCountryList(matchingCountries);
+        countryInfoEl.textContent = '';
+      } else if (
+        (matchingCountries.length === 1 &&
+          matchingCountries[0].name.common
+            .toLowerCase()
+            .startsWith(searchQuery)) ||
+        matchingCountries[0].name.common.toLowerCase() === searchQuery
       ) {
         renderCountryInfo(matchingCountries[0]);
         countryListEl.textContent = '';
-
-      } else if (matchingCountries.length >= 2 && matchingCountries.length <= 10) {
-        renderCountryList(matchingCountries);
-        countryInfoEl.textContent = '';
       } else {
         countryInfoEl.textContent = '';
         countryListEl.textContent = '';
-      }
-
-      if (matchingCountries.length > 10) {
         Notify.info(
           'Too many matches found. Please type a more specific query.'
         );
-        countryListEl.textContent = '';
-      }
-
-      if (matchingCountries.length === 0) {
-        Notify.failure('Oops, there is no country with that name');
-        countryListEl.textContent = '';
       }
     })
     .catch(error => {
@@ -83,6 +83,7 @@ const handleInputValue = event => {
 
   if (searchQuery.length === 0) {
     countryListEl.textContent = '';
+    countryInfoEl.textContent = '';
   }
 };
 
